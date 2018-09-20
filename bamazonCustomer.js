@@ -15,3 +15,35 @@
 //    * This means updating the SQL database to reflect the remaining quantity.
 //    * Once the update goes through, show the customer the total cost of their purchase.
 
+var mysql = require("mysql");
+
+var item = process.argv[2];
+var units = process.argv[3];
+
+var connection = mysql.createConnection({
+  host: "localhost",
+
+  // Your port; if not 3306
+  port: 3306,
+
+  // Your username
+  user: "root",
+
+  // Your password
+  password: "",
+  database: "bamazon_db"
+});
+
+connection.connect(function(err) {
+  if (err) throw err;
+  console.log("connected as id " + connection.threadId);
+  afterConnection();
+});
+
+function afterConnection() {
+  connection.query("SELECT * FROM products WHERE item_id = ? AND stock_quantity = ?", [item, units], function(err, res) {
+    if (err) throw err;
+    console.log(res);
+    connection.end();
+  });
+}
