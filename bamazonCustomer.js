@@ -37,13 +37,33 @@ var connection = mysql.createConnection({
 connection.connect(function(err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId);
-  afterConnection();
+  readProducts();
+  productId();
+  quantityId();
 });
 
-function afterConnection() {
-  connection.query("SELECT * FROM products WHERE item_id = ? AND stock_quantity = ?", [item, units], function(err, res) {
+function readProducts() {
+    console.log("Selecting all products...\n");
+    connection.query("SELECT * FROM products", function(err, res) {
+      if (err) throw err;
+      // Log all results of the SELECT statement
+      console.log(res);
+     
+    });
+
+function productId() {
+  console.log("What is the id of the product you would like to buy?\n");
+  connection.query("SELECT * FROM products WHERE item_id = ?", [item], function(err, res) {
     if (err) throw err;
     console.log(res);
-    connection.end();
+
   });
+
+  function quantityId() {
+    console.log("How many would you like to buy?\n");
+    connection.query("SELECT * FROM products WHERE stock_quantity = ?", [units], function(err, res) {
+      if (err) throw err;
+      console.log(res);
+      connection.end();
+    });
 }
