@@ -1,21 +1,24 @@
-// 5. Then create a Node application called `bamazonCustomer.js`. Running this application will first 
-//      display all of the items available for sale. Include the ids, names, and prices of products for sale.
 
-// 6. The app should then prompt users with two messages.
+// in command line run: nodemon bamazonCustomer.js (done)
+// running this application will first display all of the items available for sale. (done)
+// Include the ids, names, prices, etc. of products for sale (done)
 
-//    * The first should ask them the ID of the product they would like to buy.
-//    * The second message should ask how many units of the product they would like to buy.
+// The app should then prompt users with two messages: (done)
 
-// 7. Once the customer has placed the order, your application should check if your store has 
-//      enough of the product to meet the customer's request.
+// 1.   The first should ask them the ID of the product they would like to buy. (done)
+// 2.   The second message should ask how many units of the product they would like to buy. (done)
 
-//    * If not, the app should log a phrase like `Insufficient quantity!`, and then prevent the order from going through.
+// 3.   Once the customer has placed the order, your application should check if your store has enough of the product to meet the customer's request.
 
-// 8. However, if your store _does_ have enough of the product, you should fulfill the customer's order.
-//    * This means updating the SQL database to reflect the remaining quantity.
-//    * Once the update goes through, show the customer the total cost of their purchase.
+// If not, the app should log a phrase like "Insufficient quantity!"", 
+// and then prevent the order from going through.
+// However, if your store does have enough of the product, you should fulfill the customer's order.
+
+// This means updating the SQL database to reflect the remaining quantity.
+// Once the update goes through, show the customer the total cost of their purchase.
 
 var mysql = require("mysql");
+var inquirer = require("inquirer");
 
 var item = process.argv[2];
 var units = process.argv[3];
@@ -30,40 +33,69 @@ var connection = mysql.createConnection({
   user: "root",
 
   // Your password
-  password: "",
+  password: "hiya1234",
   database: "bamazon_db"
 });
 
+
 connection.connect(function(err) {
-  if (err) throw err;
-  console.log("connected as id " + connection.threadId);
-  readProducts();
-  productId();
-  quantityId();
+  if (err) {
+      throw err;
+  } else {
+      console.log("connected as id " + connection.threadId + "\n");
+      showProducts();
+     
+  }
 });
 
-function readProducts() {
-    console.log("Selecting all products...\n");
-    connection.query("SELECT * FROM products", function(err, res) {
-      if (err) throw err;
-      // Log all results of the SELECT statement
-      console.log(res);
-     
-    });
+function showProducts() { 
 
-function productId() {
-  console.log("What is the id of the product you would like to buy?\n");
-  connection.query("SELECT * FROM products WHERE item_id = ?", [item], function(err, res) {
-    if (err) throw err;
-    console.log(res);
-
-  });
-
-  function quantityId() {
-    console.log("How many would you like to buy?\n");
-    connection.query("SELECT * FROM products WHERE stock_quantity = ?", [units], function(err, res) {
-      if (err) throw err;
-      console.log(res);
-      connection.end();
-    });
+inquirer.prompt([{
+    type: "list",
+    name: "action",
+    message: "pick one: ",
+    choices: ["MAKE A PURCHASE"]
 }
+]).then(function(data) {  
+  if(data.action == "MAKE A PURCHASE") {
+    connection.query("SELECT products.item_id AS item, products.product_name AS name, products.department_name AS dept, products.price AS price, products.stock_quantity AS quantity FROM products", function(err, show) {
+      console.log(show);
+      makeSelection();
+      checkingStock();
+      });
+    }
+});
+}
+
+function makeSelection() {
+
+      inquirer.prompt([
+        {
+          type: "input",
+          name: "product_id",
+          message: "input a product id that you would like to buy? : ",
+        },
+        {
+          type: "input",
+          name: "units",
+          message: "How many units of the product would you like to buy? : ",
+        },
+        {
+          type: "input",
+          name: "name",
+          message: "give me your name: "
+        }
+      ]);
+    } 
+
+// add a confirm and console log the item customer wants to purchase as well as quantity before moving to next step
+
+function checkingStock() {
+
+    fulfillingOrder();
+}
+
+function fulfillingOrder() {
+    
+}
+     
