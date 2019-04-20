@@ -61,7 +61,7 @@ inquirer.prompt([{
     connection.query("SELECT products.item_id AS item, products.product_name AS name, products.department_name AS dept, products.price AS price, products.stock_quantity AS quantity FROM products", function(err, show) {
       console.log(show);
       makeSelection();
-      checkingStock();
+      //checkingStock();
       });
     }
 });
@@ -73,7 +73,12 @@ function makeSelection() {
         {
           type: "input",
           name: "product_id",
-          message: "input a product id that you would like to buy? : ",
+          message: "Input a product id that you would like to buy? : ",
+        },
+        {
+          type: "input",
+          name: "name",
+          message: "What is this item? : ",
         },
         {
           type: "input",
@@ -82,20 +87,26 @@ function makeSelection() {
         },
         {
           type: "input",
-          name: "name",
-          message: "give me your name: "
+          name: "guest",
+          message: "Give me your name: "
         }
-      ]);
-    } 
+      ])
+    .then(function(inquirerResponse) {
+      console.log(inquirerResponse);
+      console.log("\nI understand you want to buy a/an, " + inquirerResponse.name + ", which is product id # " + inquirerResponse.product_id);
+      console.log("\nThe quantity you would like is "+ inquirerResponse.units + ", please wait a moment " + inquirerResponse.guest + " while I check if the item is in stock.\n");
+      
+    });
+  }
 
 // add a confirm and console log the item customer wants to purchase as well as quantity before moving to next step
 
-function checkingStock() {
+// function checkingStock() {
 
-    fulfillingOrder();
-}
+//     fulfillingOrder();
+// }
 
-function fulfillingOrder() {
+// function fulfillingOrder() {
     
-}
+// }
      
