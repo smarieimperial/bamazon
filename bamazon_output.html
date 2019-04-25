@@ -315,19 +315,30 @@ function makeSelection() {
           message: "input a product id that you would like to buy? : ",
         },
         {
-          type: "input",
-          name: "units",
-          message: "How many units of the product would you like to buy? : ",
-        },
-        {
-          type: "input",
-          name: "name",
-          message: "give me your name: "
-        }
-      ]);
-    } 
+            type: "input",
+            name: "name",
+            message: "What is this item? : ",
+          },
+          {
+            type: "input",
+            name: "units",
+            message: "How many units of the product would you like to buy? : ",
+          },
+          {
+            type: "input",
+            name: "guest",
+            message: "Give me your name: "
+          }
+        ])  <!-- add a console log of the item customer wants to purchase as well as quantity before moving to next step -->
+      .then(function(inquirerResponse) {
+        console.log(inquirerResponse);
+        console.log("\nI understand you want to buy a/an, " + inquirerResponse.name + ", which is product id # " + inquirerResponse.product_id);
+        console.log("\nThe quantity you would like is "+ inquirerResponse.units + ", please wait a moment " + inquirerResponse.guest + " while I check if the item is in stock.\n");
+        
+      });
+    }
     
-    <!-- add a confirm and console log the item customer wants to purchase as well as quantity before moving to next step -->
+    
 
 function checkingStock() {
 
@@ -337,3 +348,134 @@ function checkingStock() {
 function fulfillingOrder() {
     
 }
+
+<!-- test run output so far -->
+Stephanie@DESKTOP-UO114U3 MINGW64 ~/Documents/code/homework-8/bamazon (master)
+$ node bamazonCustomer.js
+connected as id 33
+
+? pick one:  MAKE A PURCHASE
+[ RowDataPacket {
+    item: 2,
+    name: 'brush',
+    dept: 'beauty',
+    price: 25,
+    quantity: 100 },
+  RowDataPacket {
+    item: 3,
+    name: 'bra',
+    dept: 'intimates',
+    price: 45,
+    quantity: 100 },
+  RowDataPacket {
+    item: 4,
+    name: 'towel',
+    dept: 'bathroom',
+    price: 20,
+    quantity: 100 },
+  RowDataPacket {
+    item: 5,
+    name: 'sandals',
+    dept: 'shoes',
+    price: 70,
+    quantity: 100 },
+  RowDataPacket {
+    item: 6,
+    name: 'dress',
+    dept: 'clothing',
+    price: 55,
+    quantity: 100 },
+  RowDataPacket {
+    item: 7,
+    name: 'blush',
+    dept: 'makeup',
+    price: 20,
+    quantity: 100 },
+  RowDataPacket {
+    item: 8,
+    name: 'toner',
+    dept: 'beauty',
+    price: 12,
+    quantity: 100 },
+  RowDataPacket {
+    item: 9,
+    name: 'underwear',
+    dept: 'intimates',
+    price: 18,
+    quantity: 100 },
+  RowDataPacket {
+    item: 10,
+    name: 'sunscreen',
+    dept: 'makeup',
+    price: 15,
+    quantity: 100 },
+  RowDataPacket {
+    item: 11,
+    name: 'phone',
+    dept: 'electronic',
+    price: 450,
+    quantity: 100 },
+  RowDataPacket { item: 12, name: 'comb', dept: 'beauty', price: 5, quantity: 100 },
+  RowDataPacket {
+    item: 13,
+    name: 'bikini brief',
+    dept: 'intimates',
+    price: 15,
+    quantity: 50 },
+  RowDataPacket {
+    item: 14,
+    name: 'mirror',
+    dept: 'bathroom',
+    price: 10,
+    quantity: 50 },
+  RowDataPacket {
+    item: 15,
+    name: 'flip flops',
+    dept: 'shoes',
+    price: 40,
+    quantity: 80 },
+  RowDataPacket {
+    item: 16,
+    name: 'skirt',
+    dept: 'clothing',
+    price: 35,
+    quantity: 40 },
+  RowDataPacket {
+    item: 17,
+    name: 'lipstick',
+    dept: 'makeup',
+    price: 10,
+    quantity: 100 },
+  RowDataPacket {
+    item: 18,
+    name: 'mascara',
+    dept: 'makeup',
+    price: 12,
+    quantity: 100 },
+  RowDataPacket {
+    item: 19,
+    name: 'hand towel',
+    dept: 'bathroom',
+    price: 8,
+    quantity: 100 },
+  RowDataPacket {
+    item: 20,
+    name: 'laptop',
+    dept: 'electronic',
+    price: 1500,
+    quantity: 100 },
+  RowDataPacket {
+    item: 21,
+    name: 'ipad',
+    dept: 'electronic',
+    price: 350,
+    quantity: 100 } ]
+? Input a product id that you would like to buy? :  18
+? What is this item? :  mascara
+? How many units of the product would you like to buy? :  5
+? Give me your name:  Gina
+{ product_id: '18', name: 'mascara', units: '5', guest: 'Gina' }
+
+I understand you want to buy a/an, mascara, which is product id # 18
+
+The quantity you would like is 5, please wait a moment Gina while I check if the item is in stock.

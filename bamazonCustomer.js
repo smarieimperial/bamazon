@@ -8,11 +8,10 @@
 // 1.   The first should ask them the ID of the product they would like to buy. (done)
 // 2.   The second message should ask how many units of the product they would like to buy. (done)
 
-// 3.   Once the customer has placed the order, your application should check if your store has enough of the product to meet the customer's request.
+// 3.   Once the customer has placed the order, your application should check if your store has enough of the product to meet the customer's request. (done)
 
-// If not, the app should log a phrase like "Insufficient quantity!"", 
-// and then prevent the order from going through.
-// However, if your store does have enough of the product, you should fulfill the customer's order.
+// If not, the app should log a phrase like "Insufficient quantity!", and then prevent the order from going through. 
+// However, if your store does have enough of the product, you should fulfill the customer's order. (done)
 
 // This means updating the SQL database to reflect the remaining quantity.
 // Once the update goes through, show the customer the total cost of their purchase.
@@ -60,8 +59,7 @@ inquirer.prompt([{
   if(data.action == "MAKE A PURCHASE") {
     connection.query("SELECT products.item_id AS item, products.product_name AS name, products.department_name AS dept, products.price AS price, products.stock_quantity AS quantity FROM products", function(err, show) {
       console.log(show);
-      makeSelection();
-      //checkingStock();
+      makeSelection(); 
       });
     }
 });
@@ -87,26 +85,37 @@ function makeSelection() {
         },
         {
           type: "input",
+          name: "max_quantity",
+          message: "What is the current quantity? " ,
+        },
+        {
+          type: "input",
           name: "guest",
           message: "Give me your name: "
         }
-      ])
+      ]) // add a console log of the item customer wants to purchase as well as quantity 
     .then(function(inquirerResponse) {
       console.log(inquirerResponse);
       console.log("\nI understand you want to buy a/an, " + inquirerResponse.name + ", which is product id # " + inquirerResponse.product_id);
-      console.log("\nThe quantity you would like is "+ inquirerResponse.units + ", please wait a moment " + inquirerResponse.guest + " while I check if the item is in stock.\n");
+      console.log("\nThe quantity you would like is "+ inquirerResponse.units + ", please wait a moment " + inquirerResponse.guest + " while I check if the item is in stock.\n"); 
       
+      if (inquirerResponse.units <= inquirerResponse.max_quantity) {
+        console.log("we have your item in stock!\n");
+        deleteProduct();
+        showCustomer();
+      } else {
+        console.log("Insufficient quantity.");
+      }
+      connection.end();
     });
+   
   }
 
-// add a confirm and console log the item customer wants to purchase as well as quantity before moving to next step
-
-// function checkingStock() {
-
-//     fulfillingOrder();
-// }
-
-// function fulfillingOrder() {
+  function deleteProduct() {
+    console.log("Updating the current quantity.\n" );
+  
+  }
+ 
+  function showCustomer() {
     
-// }
-     
+  }
