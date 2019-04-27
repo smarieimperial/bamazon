@@ -278,12 +278,35 @@ mysql> select products.item_id AS item, products.product_name AS name, products.
 20 rows in set (0.00 sec)
 
 <!-- current .js file -->
+
+var mysql = require("mysql");
+var inquirer = require("inquirer");
+
+var item = process.argv[2];
+var units = process.argv[3];
+
+var connection = mysql.createConnection({
+  host: "localhost",
+
+  // Your port; if not 3306
+  port: 3306,
+
+  // Your username
+  user: "root",
+
+  // Your password
+  password: "hiya1234",
+  database: "bamazon_db"
+});
+
+
 connection.connect(function(err) {
   if (err) {
       throw err;
   } else {
       console.log("connected as id " + connection.threadId + "\n");
-      showProducts();
+      readProducts();
+      //showProducts();
   }
 });
 
@@ -299,8 +322,7 @@ inquirer.prompt([{
   if(data.action == "MAKE A PURCHASE") {
     connection.query("SELECT products.item_id AS item, products.product_name AS name, products.department_name AS dept, products.price AS price, products.stock_quantity AS quantity FROM products", function(err, show) {
       console.log(show);
-      makeSelection();
-      checkingStock();  
+      makeSelection();    
       });
     }
 });
@@ -308,45 +330,75 @@ inquirer.prompt([{
 
 function makeSelection() {
 
-      inquirer.prompt([
-        {
-          type: "input",
-          name: "product_id",
-          message: "input a product id that you would like to buy? : ",
-        },
-        {
-            type: "input",
-            name: "name",
-            message: "What is this item? : ",
-          },
-          {
-            type: "input",
-            name: "units",
-            message: "How many units of the product would you like to buy? : ",
-          },
-          {
-            type: "input",
-            name: "guest",
-            message: "Give me your name: "
-          }
-        ])  <!-- add a console log of the item customer wants to purchase as well as quantity before moving to next step -->
-      .then(function(inquirerResponse) {
-        console.log(inquirerResponse);
-        console.log("\nI understand you want to buy a/an, " + inquirerResponse.name + ", which is product id # " + inquirerResponse.product_id);
-        console.log("\nThe quantity you would like is "+ inquirerResponse.units + ", please wait a moment " + inquirerResponse.guest + " while I check if the item is in stock.\n");
-        
-      });
+  inquirer.prompt([
+    {
+      type: "input",
+      name: "product_id",
+      message: "Input a product id that you would like to buy? : ",
+    },
+    {
+      type: "input",
+      name: "name",
+      message: "What is this item? : ",
+    },
+    {
+      type: "input",
+      name: "units",
+      message: "How many units of the product would you like to buy? : ",
+    },
+    {
+      type: "input",
+      name: "max_quantity",
+      message: "What is the current quantity? " ,
+    },
+    {
+      type: "input",
+      name: "guest",
+      message: "Give me your name: "
     }
-    
-    
+  ]) // add a console log of the item customer wants to purchase as well as quantity 
+.then(function(inquirerResponse) {
+  console.log(inquirerResponse);
+  console.log("I understand you want to buy a/an, " + inquirerResponse.name + ", which is product id # " + inquirerResponse.product_id);
+  console.log("The quantity you would like is "+ inquirerResponse.units + ", please wait a moment " + inquirerResponse.guest + " while I check if the item is in stock.\n"); 
+  
+  var max = 0; 
 
-function checkingStock() {
+  if (inquirerResponse.units <= inquirerResponse.max_quantity) { 
 
-    fulfillingOrder();
+    max = inquirerResponse.max_quantity; 
+
+    console.log("we have your item in stock!\n"); 
+    
+  } else {
+    console.log("Insufficient quantity.");
+  }
+  connection.end();
+});
+
+// logs the actual query being run and we update the database
+//console.log(query.sql);
 }
 
-function fulfillingOrder() {
-    
+function deleteProduct() {
+console.log("Updating the current quantity.\n" );
+
+}
+
+function showCustomer() {
+
+}
+
+function readProducts() {
+  console.log("Selecting all products...\n");
+  connection.query("SELECT * FROM products", function(err, res) {
+    if (err) throw err;
+
+    // Log all results of the SELECT statement
+    console.log(res);
+
+    showProducts();
+  });
 }
 
 <!-- test run output so far -->
@@ -479,3 +531,86 @@ connected as id 33
 I understand you want to buy a/an, mascara, which is product id # 18
 
 The quantity you would like is 5, please wait a moment Gina while I check if the item is in stock.
+
+<!-- CURRENT OUTPUT IF ITEM IS IN STOCK: -->
+
+RowDataPacket {
+  item: 18,
+  name: 'mascara',
+  dept: 'makeup',
+  price: 12,
+  quantity: 100 },
+RowDataPacket {
+  item: 19,
+  name: 'hand towel',
+  dept: 'bathroom',
+  price: 8,
+  quantity: 100 },
+RowDataPacket {
+  item: 20,
+  name: 'laptop',
+  dept: 'electronic',
+  price: 1500,
+  quantity: 100 },
+RowDataPacket {
+  item: 21,
+  name: 'ipad',
+  dept: 'electronic',
+  price: 350,
+  quantity: 100 } ]
+? Input a product id that you would like to buy? :  21
+? What is this item? :  ipad
+? How many units of the product would you like to buy? :  1
+? What is the current quantity?  100
+? Give me your name:  rose
+{ product_id: '21',
+name: 'ipad',
+units: '1',
+max_quantity: '100',
+guest: 'rose' }
+I understand you want to buy a/an, ipad, which is product id # 21
+The quantity you would like is 1, please wait a moment rose while I check if the item is in stock.
+
+we have your item in stock!
+
+
+<!-- CURRENT OUTPUT IF ITEM IS NOT IN STOCK: -->
+
+RowDataPacket {
+  item: 18,
+  name: 'mascara',
+  dept: 'makeup',
+  price: 12,
+  quantity: 100 },
+RowDataPacket {
+  item: 19,
+  name: 'hand towel',
+  dept: 'bathroom',
+  price: 8,
+  quantity: 100 },
+RowDataPacket {
+  item: 20,
+  name: 'laptop',
+  dept: 'electronic',
+  price: 1500,
+  quantity: 100 },
+RowDataPacket {
+  item: 21,
+  name: 'ipad',
+  dept: 'electronic',
+  price: 350,
+  quantity: 100 } ]
+? Input a product id that you would like to buy? :  21
+? What is this item? :  ipad
+? How many units of the product would you like to buy? :  103
+? What is the current quantity?  100
+? Give me your name:  rose
+{ product_id: '21',
+name: 'ipad',
+units: '103',
+max_quantity: '100',
+guest: 'rose' }
+I understand you want to buy a/an, ipad, which is product id # 21
+The quantity you would like is 103, please wait a moment rose while I check if the item is in stock.
+
+Insufficient quantity.
