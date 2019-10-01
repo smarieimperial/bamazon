@@ -281,6 +281,9 @@ mysql> select products.item_id AS item, products.product_name AS name, products.
 
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+require('dotenv').config();
+
+//console.log(process.env);
 
 var item = process.argv[2];
 var units = process.argv[3];
@@ -295,7 +298,7 @@ var connection = mysql.createConnection({
   user: "root",
 
   // Your password
-  password: "hiya1234",
+  password: process.env.PASSWORD,
   database: "bamazon_db"
 });
 

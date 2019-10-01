@@ -17,7 +17,7 @@ var mysql = require("mysql");
 var inquirer = require("inquirer");
 require('dotenv').config();
 
-// console.log(process.env);
+//console.log(process.env);
 
 var item = process.argv[2];
 var units = process.argv[3];
