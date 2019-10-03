@@ -1,4 +1,4 @@
-# bamazon
+# bamazon (update: see https://github.com/smarieimperial/minizon for updated code)
 
 # Node.js & MySQL
 
